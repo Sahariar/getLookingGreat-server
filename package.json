@@ -1,0 +1,27 @@
+{
+  "name": "b6a11-service-review-server-side-sahariar",
+  "version": "1.0.0",
+  "description": "Jatun Makeup server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Porgramming-Hero-web-course/b6a11-service-review-server-side-Sahariar.git"
+  },
+  "author": "Sahariar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Porgramming-Hero-web-course/b6a11-service-review-server-side-Sahariar/issues"
+  },
+  "homepage": "https://github.com/Porgramming-Hero-web-course/b6a11-service-review-server-side-Sahariar#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^4.11.0",
+    "nodemon": "^2.0.20"
+  }
+}
