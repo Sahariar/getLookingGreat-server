@@ -26,7 +26,11 @@ const run = async () => {
 		app.get("/services", async (req, res) => {
 			const query = {};
 			const limit = parseInt(req.query.limit);
-			const cursor = servicesCollection.find(query);
+            const options = {
+                // sort returned documents in ascending order by title (A->Z)
+                sort: { postTime: -1 },
+              };
+			const cursor = servicesCollection.find(query , options);
 			if (limit) {
 				const result = await cursor.limit(limit).toArray();
 				return res.send(result);
@@ -58,7 +62,6 @@ const run = async () => {
                 console.log("No documents matched the query. Deleted 0 documents.");
               }
         })
-
 		//get reviews
 		app.get("/reviews", async (req, res) => {
 			const service_id = req.query.service_id;
@@ -70,7 +73,7 @@ const run = async () => {
 				query = {
 					service_id: service_id,
 				};
-				console.log(service_id);
+				
 			}
 			if (userEmail) {
 				query = {
