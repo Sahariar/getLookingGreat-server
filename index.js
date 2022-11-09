@@ -65,15 +65,14 @@ const run = async () => {
 		//get reviews
 		app.get("/reviews", async (req, res) => {
 			const service_id = req.query.service_id;
-			const userEmail = req.query.email;
+			const userEmail = req.query.userEmail;
 
 			let query = {};
 
 			if (service_id) {
 				query = {
 					service_id: service_id,
-				};
-				
+				};	
 			}
 			if (userEmail) {
 				query = {
@@ -91,7 +90,11 @@ const run = async () => {
 		});
         // post reviews
         app.post('/reviews' , async(req ,res) =>{
-            const reviewPost = req.body;
+			const dataFrom = req.body
+            const reviewPost = {
+				...dataFrom,
+				"postTime":new Date().toLocaleString()
+			}
             const result = await reviewsCollection.insertOne(reviewPost)
             console.log(`A document was inserted with the _id: ${result.insertedId}`);
         })
@@ -102,9 +105,11 @@ const run = async () => {
 			const result = await reviewsCollection.findOne(query);
 			res.send(result);
 		});
+
+		
         // delete Reviews
-        app.post('/reviews' , async(req ,res) =>{
-            const id = req.body.id;
+        app.delete('/reviews/:id' , async(req ,res) =>{
+            const id = req.params.id;
             const query = { _id: ObjectId(id) };
 
             const result = await reviewsCollection.deleteOne(query)
