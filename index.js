@@ -20,15 +20,16 @@ const client = new MongoClient(uri, {
 
 function verifyJWT(req, res, next) {
 	const authHeader = req.headers.authorization;
+	
 
 	if (!authHeader) {
 		return res.status(401).send({ message: "Unauthorized Access" });
 	}
 	const token = authHeader.split(" ")[1];
-
+	console.log(token);
 	jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (error, decoded) {
 		if (error) {
-			return res.status(401).send({ message: "Unauthorized Access" });
+			return res.status(401).send({ message: "Unauthorized Access Token" });
 		}
 		req.decoded = decoded;
 		next();
@@ -43,10 +44,8 @@ const run = async () => {
 
 		app.post("/jwt", (req, res) => {
 			const user = req.body;
-			console.log(user);
-			const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-				expiresIn: "1d",
-			});
+		
+			const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1d'})
 			res.send({ token });
 		});
 
@@ -89,10 +88,17 @@ const run = async () => {
 		});
 		// post services
 		app.post("/services", async (req, res) => {
-			const servicePost = req.body;
-			const result = await servicesCollection.insertOne(servicePost);
+
+			const dataFrom = req.body;
+			const reviewPost = {
+				...dataFrom,
+				postTime: new Date(),
+			};
+
+			const result = await servicesCollection.insertOne(reviewPost);
 			console.log(`A document was inserted with the _id: ${result.insertedId}`);
 		});
+			
 
 		// delete services
 		app.delete("/services", async (req, res) => {
@@ -129,7 +135,7 @@ const run = async () => {
 		app.get("/reviews/user",verifyJWT, async (req, res) => {
 			const userEmail = req.query.userEmail;
 
-			console.log(req.headers.authorization);
+			
 
 				const query = {
 					userEmail: userEmail,
@@ -154,11 +160,12 @@ const run = async () => {
 			};
 			const result = await reviewsCollection.insertOne(reviewPost);
 			console.log(`A document was inserted with the _id: ${result.insertedId}`);
+			res.send(result)
 		});
 
 		// update reviews
 		app.put("/reviews/single", verifyJWT, async (req, res) => {
-			console.log(req.headers);
+		
 			const id = req.query.id;
 			const dataFrom = req.body;
 			const reviewPost = {
@@ -173,7 +180,7 @@ const run = async () => {
 					postTime: reviewPost.postTime,
 				},
 			};
-			console.log(reviewPost);
+		
 			const options = { upsert: true };
 
 			const result = await reviewsCollection.updateOne(
@@ -187,7 +194,7 @@ const run = async () => {
 
 		app.get("/reviews/single", verifyJWT,  async (req, res) => {
 			const id = req.query.id;
-			console.log(req.headers);
+		
 			const query = { _id: ObjectId(id) };
 			const result = await reviewsCollection.findOne(query);
 			res.send(result);
