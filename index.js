@@ -97,6 +97,7 @@ const run = async () => {
 
 			const result = await servicesCollection.insertOne(reviewPost);
 			console.log(`A document was inserted with the _id: ${result.insertedId}`);
+			res.send(result)
 		});
 			
 
